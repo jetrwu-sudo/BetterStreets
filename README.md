@@ -21,7 +21,7 @@
 
 | **Login Screen**                          | **Home Screen**                          | **Report Issue**                         |
 |-------------------------------------------|------------------------------------------|------------------------------------------|
-| ![Login](https://via.placeholder.com/150) | ![Home](https://via.placeholder.com/150) | ![Report](https://via.placeholder.com/150) |
+| ![Login](https://pasteboard.co/b3pQeNuTqkya.png) | ![Home](https://pasteboard.co/b3pQeNuTqkya.png) | ![Report](https://pasteboard.co/b3pQeNuTqkya.png) |
 
 ---
 
@@ -38,5 +38,5 @@
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/<your-username>/betterstreets.git
+   git clone https://github.com/jetrwu-sudo/betterstreets.git
    cd betterstreets
