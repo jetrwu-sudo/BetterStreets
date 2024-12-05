@@ -1,6 +1,4 @@
-# Activity 2
-
-IT3R7 | (IT314) Software Engineering
+# IT3R7 | (IT314) Software Engineering
 
 ## Team Members:
 - Jeanne B. Jagualing
