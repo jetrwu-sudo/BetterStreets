@@ -5,7 +5,7 @@ import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import HomeScreen from './screens/HomeScreen';
 import ReportIssueScreen from './screens/ReportIssueScreen';
-import IssueDetailsScreen from './screens/IssueDetailsScreen'; // Add this once converted
+import IssueDetailsScreen from './screens/IssueDetailsScreen'; 
 
 const Stack = createStackNavigator();
 

@@ -12,13 +12,10 @@ import {
 export default function IssueDetailsScreen({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backText}>{"< Back"}</Text>
-      </TouchableOpacity>
 
       <Text style={styles.heading}>Issue Details</Text>
 
-      <View style={styles.card}>
+      <View style={styles.card}> 
         <View style={styles.row}>
           <Text style={styles.title}>Pothole on Main Street</Text>
           <View style={styles.statusContainer}>

@@ -15,12 +15,7 @@ export default function ReportIssueScreen({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-<TouchableOpacity
-  onPress={() => navigation.navigate('HomeScreen')}
-  style={styles.submitButton}
->
-  <Text style={styles.submitText}>Submit Report</Text>
-</TouchableOpacity>
+
       <Text style={styles.heading}>Report an Issue</Text>
       <Text style={styles.subheading}>
         Let us know about a problem in your area. Adding detailed information helps resolve it faster.
@@ -65,8 +60,9 @@ export default function ReportIssueScreen({ navigation }) {
           <Text style={styles.photoOptional}>Optional</Text>
         </View>
 
+        {/* Submit Report Button */}
         <TouchableOpacity
-          onPress={() => console.log('Report Submitted')}
+          onPress={() => navigation.navigate('IssueDetailsScreen')} // Navigate to IssueDetailsScreen
           style={styles.submitButton}
         >
           <Text style={styles.submitText}>Submit Report</Text>
@@ -84,10 +80,6 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginBottom: 16,
-  },
-  backText: {
-    color: '#FFFFFF',
-    fontSize: 16,
   },
   heading: {
     fontSize: 24,
