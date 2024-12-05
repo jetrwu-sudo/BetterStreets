@@ -1,3 +1,13 @@
+# Activity 2
+
+IT3R7 | (IT314) Software Engineering
+
+## Team Members:
+- Jeanne B. Jagualing
+- Jetrho V. Dela Cruz
+- Quinn Lynard Castro
+- Raphael Nambatac
+
 # 🌟 BetterStreets 🌟
 
 ![React Native](https://img.shields.io/badge/React%20Native-0.72-blue?style=for-the-badge)
