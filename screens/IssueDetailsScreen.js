@@ -1,79 +1,100 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Image,
-  TextInput,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; // For the location icon
 
-export default function IssueDetailsScreen({ navigation }) {
+export default function IssueDetailsScreen({ route, navigation }) {
+  const { issueTitle, description, location } = route.params || {};
+  const [updateText, setUpdateText] = useState('');
+  const [comments, setComments] = useState([]);
+  const [updateList, setUpdateList] = useState([]);
+
+  const handleAddComment = () => {
+    if (updateText.trim()) {
+      setComments([...comments, updateText]);
+      setUpdateText('');
+    } else {
+      Alert.alert('Error', 'Please enter a comment');
+    }
+  };
+
+  const handleAddUpdate = () => {
+    if (updateText.trim()) {
+      const newUpdate = {
+        text: updateText,
+        timestamp: new Date().toLocaleString(),
+      };
+      setUpdateList([...updateList, newUpdate]);
+      setUpdateText('');
+    } else {
+      Alert.alert('Error', 'Please enter an update');
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.issueTitle}>{issueTitle}</Text>
+      <Text style={styles.issueDescription}>{description}</Text>
 
-      <Text style={styles.heading}>Issue Details</Text>
-
-      <View style={styles.card}> 
-        <View style={styles.row}>
-          <Text style={styles.title}>Pothole on Main Street</Text>
-          <View style={styles.statusContainer}>
-            <Text style={styles.statusText}>In Progress</Text>
-          </View>
-        </View>
-
-        <Text style={styles.description}>
-          Large pothole causing traffic slowdown and potential vehicle damage. Located near the intersection with Oak Avenue.
+      {/* Location Icon */}
+      <View style={styles.locationContainer}>
+        <MaterialCommunityIcons name="map-marker" size={24} color="black" />
+        <Text style={styles.locationText}>
+          {location ? `Lat: ${location.latitude}, Lng: ${location.longitude}` : 'No location available'}
         </Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.subheading}>Location</Text>
-        <View style={styles.row}>
-          <Text style={styles.locationText}>123 Main Street, Downtown</Text>
-        </View>
-        <Image
-          source={{ uri: 'https://images.unsplash.com/photo-1584931423298-c576fda54bd2?w=500&h=500' }}
-          style={styles.locationImage}
-        />
+      {/* Updates Section */}
+      <Text style={styles.sectionTitle}>Updates</Text>
+      <TextInput
+        style={styles.updateInput}
+        placeholder="Add an update..."
+        value={updateText}
+        onChangeText={setUpdateText}
+      />
+      <TouchableOpacity style={styles.addUpdateButton} onPress={handleAddUpdate}>
+        <Text style={styles.addUpdateButtonText}>Add Update</Text>
+      </TouchableOpacity>
+
+      <View style={styles.updateList}>
+        {updateList.map((update, index) => (
+          <View key={index} style={styles.updateItem}>
+            <Text style={styles.updateText}>{update.text}</Text>
+            <Text style={styles.timestamp}>{update.timestamp}</Text>
+          </View>
+        ))}
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.subheading}>Updates</Text>
-        <View style={styles.update}>
-          <View style={styles.row}>
-            <Text style={styles.updateTitle}>City Maintenance</Text>
-            <Text style={styles.timestamp}>2 hours ago</Text>
-          </View>
-          <Text style={styles.updateText}>
-            Maintenance crew has been dispatched to assess the damage and begin repairs.
-          </Text>
-        </View>
-        <View style={styles.update}>
-          <View style={styles.row}>
-            <Text style={styles.updateTitle}>Traffic Department</Text>
-            <Text style={styles.timestamp}>1 day ago</Text>
-          </View>
-          <Text style={styles.updateText}>
-            Traffic cones have been placed around the area. Please drive carefully.
-          </Text>
-        </View>
+      {/* Comments Section */}
+      <Text style={styles.sectionTitle}>Comments</Text>
+      <TextInput
+        style={styles.commentInput}
+        placeholder="Add a comment..."
+        value={updateText}
+        onChangeText={setUpdateText}
+      />
+      <TouchableOpacity style={styles.addCommentButton} onPress={handleAddComment}>
+        <Text style={styles.addCommentButtonText}>Add Comment</Text>
+      </TouchableOpacity>
+
+      <View style={styles.commentList}>
+        {comments.map((comment, index) => (
+          <Text key={index} style={styles.commentText}>{comment}</Text>
+        ))}
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.subheading}>Add Comment</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Share an update or comment..."
-          multiline={true}
-          numberOfLines={3}
-        />
-        <TouchableOpacity
-          onPress={() => console.log('Comment Posted')}
-          style={styles.submitButton}
-        >
-          <Text style={styles.submitText}>Post Comment</Text>
+      {/* Footer Navigation */}
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+          <Text style={styles.footerText}>🏠 Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
+          <Text style={styles.footerText}>🗺️ Map</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('UpdatesScreen')}>
+          <Text style={styles.footerText}>🔔 Updates</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+          <Text style={styles.footerText}>👤 Profile</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -82,104 +103,121 @@ export default function IssueDetailsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 16,
-    backgroundColor: '#1A237E',
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+    padding: 20,
   },
-  backButton: {
-    marginBottom: 16,
-  },
-  backText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  heading: {
-    fontSize: 24,
+  issueTitle: {
+    fontSize: 30,
     fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 16,
+    color: '#3F51B5',
+    marginBottom: 10,
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
+  issueDescription: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 20,
   },
-  row: {
+  locationContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1A237E',
-  },
-  statusContainer: {
-    backgroundColor: '#FFF3E0',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 12,
-  },
-  statusText: {
-    color: '#FF6F00',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  description: {
-    fontSize: 14,
-    color: '#1A237E',
-    marginTop: 8,
-  },
-  subheading: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1A237E',
-    marginBottom: 8,
+    marginBottom: 20,
   },
   locationText: {
-    color: '#1A237E',
-  },
-  locationImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 12,
-    marginTop: 8,
-  },
-  update: {
-    marginBottom: 12,
-  },
-  updateTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#1A237E',
+    color: '#333',
+    marginLeft: 10,
   },
-  updateText: {
-    fontSize: 14,
-    color: '#1A237E',
-    marginTop: 4,
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 10,
+    color: '#3F51B5',
   },
-  timestamp: {
-    fontSize: 12,
-    color: '#E0E0E0',
-  },
-  input: {
+  updateInput: {
+    backgroundColor: '#FFF',
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 8,
-    padding: 8,
-    backgroundColor: '#F5F5F5',
-    marginBottom: 16,
+    padding: 10,
+    marginBottom: 10,
   },
-  submitButton: {
+  addUpdateButton: {
     backgroundColor: '#3F51B5',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 25,
-    padding: 12,
     alignItems: 'center',
+    marginBottom: 20,
   },
-  submitText: {
-    color: '#FFFFFF',
+  addUpdateButtonText: {
+    color: '#FFF',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  updateList: {
+    marginBottom: 20,
+  },
+  updateItem: {
+    backgroundColor: '#FFF',
+    padding: 10,
+    marginBottom: 5,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  updateText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  timestamp: {
+    fontSize: 12,
+    color: '#B0B0B0',
+    marginTop: 5,
+  },
+  commentInput: {
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+  },
+  addCommentButton: {
+    backgroundColor: '#3F51B5',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  addCommentButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  commentList: {
+    marginBottom: 20,
+  },
+  commentText: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 5,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#333',
+    height: 70,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 10,
+  },
+  footerText: {
+    color: '#FFF',
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });

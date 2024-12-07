@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     elevation: 5,
+    alignItems: 'center',  // Centering the children inside the container
   },
   signupText: {
     fontSize: 18,
@@ -169,9 +170,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     color: '#333333',
+    width: '100%',  // Make the inputs full-width to maintain consistent size
   },
   passwordContainer: {
     position: 'relative',
+    width: '100%',  // Ensuring password input is also full-width
   },
   visibilityToggle: {
     position: 'absolute',
@@ -183,6 +186,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 15,
     alignItems: 'center',
+    width: '100%',  // Ensure the button takes up full width
     marginVertical: 15,
   },
   signupButtonText: {

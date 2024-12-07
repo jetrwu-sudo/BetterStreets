@@ -71,20 +71,22 @@ export default function HomeScreen({ navigation }) {
         </View>
       </ScrollView>
 
+      {/* Footer Navigation */}
       <View style={styles.bottomNav}>
-        <TouchableOpacity>
-          <Text style={styles.navItem}>🏠 Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.navItem}>🗺️ Map</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.navItem}>🔔 Updates</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.navItem}>👤 Profile</Text>
-        </TouchableOpacity>
-      </View>
+  <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+    <Text style={styles.navItem}>🏠 Home</Text>
+  </TouchableOpacity>
+  <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
+    <Text style={styles.navItem}>🗺️ Map</Text>
+  </TouchableOpacity>
+  <TouchableOpacity onPress={() => navigation.navigate('UpdatesScreen')}>
+    <Text style={styles.navItem}>🔔 Updates</Text>
+  </TouchableOpacity>
+  <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+    <Text style={styles.navItem}>👤 Profile</Text>
+  </TouchableOpacity>
+</View>
+
     </View>
   );
 }
@@ -200,7 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 5,
   },
-  reportStatusResoalved: {
+  reportStatusResolved: {
     color: '#2E7D32',
     fontSize: 12,
   },
