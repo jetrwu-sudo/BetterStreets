@@ -40,11 +40,16 @@ export default function SelectLocationScreen({ navigation, route }) {
       Alert.alert('No Location Selected', 'Please tap on the map to select a location.');
       return;
     }
-
+  
+    // Pass data back to ReportIssueScreen
     navigation.navigate(route.params.returnScreen, {
       location: selectedLocation,
+      issueTitle: route.params.issueTitle,
+      description: route.params.description,
+      category: route.params.category,
     });
   };
+  
 
   if (loading) {
     return (

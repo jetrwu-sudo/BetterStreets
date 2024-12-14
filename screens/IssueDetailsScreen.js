@@ -5,13 +5,14 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'; // For the location
 export default function IssueDetailsScreen({ route, navigation }) {
   const { issueTitle, description, location } = route.params || {};
   const [updateText, setUpdateText] = useState('');
+  const [commentText, setCommentText] = useState(''); // Separate comment state
   const [comments, setComments] = useState([]);
   const [updateList, setUpdateList] = useState([]);
 
   const handleAddComment = () => {
-    if (updateText.trim()) {
-      setComments([...comments, updateText]);
-      setUpdateText('');
+    if (commentText.trim()) {
+      setComments([...comments, commentText]);
+      setCommentText(''); // Clear comment input
     } else {
       Alert.alert('Error', 'Please enter a comment');
     }
@@ -24,7 +25,7 @@ export default function IssueDetailsScreen({ route, navigation }) {
         timestamp: new Date().toLocaleString(),
       };
       setUpdateList([...updateList, newUpdate]);
-      setUpdateText('');
+      setUpdateText(''); // Clear update input
     } else {
       Alert.alert('Error', 'Please enter an update');
     }
@@ -69,8 +70,8 @@ export default function IssueDetailsScreen({ route, navigation }) {
       <TextInput
         style={styles.commentInput}
         placeholder="Add a comment..."
-        value={updateText}
-        onChangeText={setUpdateText}
+        value={commentText}
+        onChangeText={setCommentText}
       />
       <TouchableOpacity style={styles.addCommentButton} onPress={handleAddComment}>
         <Text style={styles.addCommentButtonText}>Add Comment</Text>

@@ -8,12 +8,33 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
+  Alert,
 } from 'react-native';
+import { supabase } from '../supabase';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      Alert.alert('Login Failed', error.message);
+    } else {
+      Alert.alert('Success', 'Logged in successfully');
+      navigation.navigate('HomeScreen');
+    }
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -22,7 +43,7 @@ export default function LoginScreen({ navigation }) {
           <Image
             style={styles.logo}
             source={{
-              uri: 'https://images.unsplash.com/photo-1480374178950-b2c449be122e?w=500&h=500',
+              uri: 'https://www.canva.com/design/DAGZOur4VcQ/6IQPOFbZAQNOk8p5UOcsRw/view?utm_content=DAGZOur4VcQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hef97289d81',
             }}
           />
           <Text style={styles.title}>BetterStreets</Text>
@@ -41,6 +62,7 @@ export default function LoginScreen({ navigation }) {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            autoCapitalize="none"
           />
 
           <View style={styles.passwordContainer}>
@@ -51,6 +73,7 @@ export default function LoginScreen({ navigation }) {
               secureTextEntry={!passwordVisible}
               value={password}
               onChangeText={setPassword}
+              autoCapitalize="none"
             />
             <TouchableOpacity
               onPress={() => setPasswordVisible(!passwordVisible)}
@@ -60,19 +83,11 @@ export default function LoginScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={() => {
-
-              navigation.navigate('HomeScreen');
-            }}
-          >
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => console.log('Forgot Password Pressed')}
-          >
+          <TouchableOpacity onPress={() => console.log('Forgot Password Pressed')}>
             <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
@@ -129,6 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     elevation: 5,
+    alignItems: 'center',
   },
   welcomeText: {
     fontSize: 18,
@@ -145,10 +161,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     color: '#333333',
-  },
+    width: '100%',  // Make it full width
+  },  
   passwordContainer: {
     position: 'relative',
-  },
+    width: '100%', // Ensure it's the same width as the other inputs
+  },  
   visibilityToggle: {
     position: 'absolute',
     right: 15,
@@ -160,6 +178,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     marginVertical: 15,
+    width: '100%',
   },
   loginButtonText: {
     color: '#FFFFFF',

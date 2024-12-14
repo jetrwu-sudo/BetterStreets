@@ -1,14 +1,26 @@
-import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { supabase } from '../supabase'; // Import Supabase client
 
 export default function HomeScreen({ navigation }) {
+  const [recentReports, setRecentReports] = useState([]);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      const { data, error } = await supabase
+        .from('reports')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5); // Fetch the most recent 5 reports
+      if (error) {
+        console.error(error);
+      } else {
+        setRecentReports(data);
+      }
+    };
+    fetchReports();
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
@@ -29,13 +41,13 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.cardTitle}>Quick Actions</Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('ReportIssueScreen')} // Navigate to ReportIssueScreen
+            onPress={() => navigation.navigate('ReportIssueScreen')}
           >
             <Text style={styles.buttonText}>Report an Issue</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.buttonOutlined}
-            onPress={() => console.log('View Issues Pressed')}
+            onPress={() => navigation.navigate('ViewIssuesScreen')} // Navigate to ViewIssuesScreen
           >
             <Text style={styles.buttonOutlinedText}>View Issues</Text>
           </TouchableOpacity>
@@ -43,50 +55,38 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Recent Reports</Text>
-          <View style={styles.reportItem}>
-            <View style={styles.reportIconContainer}>
-              <Text style={styles.reportIcon}>🚧</Text>
+          {recentReports.map((report) => (
+            <View key={report.id} style={styles.reportItem}>
+              <View style={styles.reportIconContainer}>
+                <Text style={styles.reportIcon}>🚧</Text>
+              </View>
+              <View style={styles.reportDetails}>
+                <Text style={styles.reportTitle}>{report.title}</Text>
+                <Text style={styles.reportSubtitle}>Reported {new Date(report.created_at).toLocaleString()}</Text>
+              </View>
+              <View style={styles.reportStatusContainer}>
+                <Text style={styles.reportStatus}>{report.status}</Text>
+              </View>
             </View>
-            <View style={styles.reportDetails}>
-              <Text style={styles.reportTitle}>Pothole on Main Street</Text>
-              <Text style={styles.reportSubtitle}>Reported 2 hours ago</Text>
-            </View>
-            <View style={styles.reportStatusContainer}>
-              <Text style={styles.reportStatus}>In Progress</Text>
-            </View>
-          </View>
-
-          <View style={styles.reportItem}>
-            <View style={styles.reportIconContainer}>
-              <Text style={styles.reportIcon}>💡</Text>
-            </View>
-            <View style={styles.reportDetails}>
-              <Text style={styles.reportTitle}>Street Light Out</Text>
-              <Text style={styles.reportSubtitle}>Reported 5 hours ago</Text>
-            </View>
-            <View style={styles.reportStatusContainerResolved}>
-              <Text style={styles.reportStatusResolved}>Resolved</Text>
-            </View>
-          </View>
+          ))}
         </View>
       </ScrollView>
 
       {/* Footer Navigation */}
       <View style={styles.bottomNav}>
-  <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
-    <Text style={styles.navItem}>🏠 Home</Text>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
-    <Text style={styles.navItem}>🗺️ Map</Text>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={() => navigation.navigate('UpdatesScreen')}>
-    <Text style={styles.navItem}>🔔 Updates</Text>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
-    <Text style={styles.navItem}>👤 Profile</Text>
-  </TouchableOpacity>
-</View>
-
+        <TouchableOpacity onPress={() => navigation.navigate('HomeScreen')}>
+          <Text style={styles.navItem}>🏠 Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('MapScreen')}>
+          <Text style={styles.navItem}>🗺️ Map</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('UpdatesScreen')}>
+          <Text style={styles.navItem}>🔔 Updates</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+          <Text style={styles.navItem}>👤 Profile</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -195,15 +195,6 @@ const styles = StyleSheet.create({
   },
   reportStatus: {
     color: '#FF6F00',
-    fontSize: 12,
-  },
-  reportStatusContainerResolved: {
-    backgroundColor: '#E8F5E9',
-    borderRadius: 12,
-    padding: 5,
-  },
-  reportStatusResolved: {
-    color: '#2E7D32',
     fontSize: 12,
   },
   bottomNav: {

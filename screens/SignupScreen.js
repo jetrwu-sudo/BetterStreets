@@ -8,15 +8,39 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
+  Alert
 } from 'react-native';
+import { supabase } from '../supabase'; // Import Supabase client
 
 export default function SignupScreen({ navigation }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const handleSignUp = async () => {
+    if (!email || !password || !fullName || password !== confirmPassword) {
+      Alert.alert('Error', 'Please fill in all fields and ensure passwords match.');
+      return;
+    }
+
+    try {
+      // Directly insert user data into 'users' table, UUID is auto-generated
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([{ full_name: fullName, email, password }]); // 'id' is auto-generated as UUID
+
+      if (insertError) {
+        Alert.alert('Signup Error', insertError.message);
+        return;
+      }
+
+      Alert.alert('Success', 'Account created successfully');
+      navigation.navigate('LoginScreen');  // Navigate to the login screen after successful signup
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -24,19 +48,14 @@ export default function SignupScreen({ navigation }) {
         <View style={styles.logoContainer}>
           <Image
             style={styles.logo}
-            source={{
-              uri: 'https://images.unsplash.com/photo-1556484687-30636164638b?w=500&h=500',
-            }}
+            source={{ uri: 'https://your-logo-url-here' }}
           />
-          <Text style={styles.title}>Create Your Account</Text>
-          <Text style={styles.subtitle}>
-            Become part of BetterStreets and help make your community a better place
-          </Text>
+          <Text style={styles.title}>BetterStreets</Text>
+          <Text style={styles.subtitle}>Become part of BetterStreets and help make your community a better place</Text>
         </View>
 
         <View style={styles.inputContainer}>
           <Text style={styles.signupText}>Sign Up</Text>
-
           <TextInput
             style={styles.input}
             placeholder="Full Name"
@@ -44,7 +63,6 @@ export default function SignupScreen({ navigation }) {
             value={fullName}
             onChangeText={setFullName}
           />
-
           <TextInput
             style={styles.input}
             placeholder="Email Address"
@@ -53,60 +71,30 @@ export default function SignupScreen({ navigation }) {
             onChangeText={setEmail}
             keyboardType="email-address"
           />
-
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#B0B0B0"
-              secureTextEntry={!passwordVisible}
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={styles.visibilityToggle}
-            >
-              <Text>{passwordVisible ? '🙈' : '👁️'}</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm Password"
-              placeholderTextColor="#B0B0B0"
-              secureTextEntry={!confirmPasswordVisible}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-            <TouchableOpacity
-              onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-              style={styles.visibilityToggle}
-            >
-              <Text>{confirmPasswordVisible ? '🙈' : '👁️'}</Text>
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity
-            style={styles.signupButton}
-            onPress={() => {
-              // Handle Sign-Up logic here
-              console.log('Sign-Up Pressed');
-              // After signing up, navigate back to LoginScreen
-              navigation.navigate('LoginScreen');
-            }}
-          >
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#B0B0B0"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor="#B0B0B0"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+          <TouchableOpacity style={styles.signupButton} onPress={handleSignUp}>
             <Text style={styles.signupButtonText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>Already have an account?</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('LoginScreen')}
-            style={styles.loginButton}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')} style={styles.loginButton}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
         </View>
@@ -153,7 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     elevation: 5,
-    alignItems: 'center',  // Centering the children inside the container
+    alignItems: 'center',
   },
   signupText: {
     fontSize: 18,
@@ -170,23 +158,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     color: '#333333',
-    width: '100%',  // Make the inputs full-width to maintain consistent size
-  },
-  passwordContainer: {
-    position: 'relative',
-    width: '100%',  // Ensuring password input is also full-width
-  },
-  visibilityToggle: {
-    position: 'absolute',
-    right: 15,
-    top: 10,
+    width: '100%',
   },
   signupButton: {
     backgroundColor: '#3F51B5',
     borderRadius: 25,
     paddingVertical: 15,
     alignItems: 'center',
-    width: '100%',  // Ensure the button takes up full width
+    width: '100%',
     marginVertical: 15,
   },
   signupButtonText: {
