@@ -20,9 +20,9 @@ export default function ReportIssueScreen({ navigation, route }) {
     console.log('Before Submit:', { category, description, issueTitle, location });  // Check state before submitting
 
     // Check if the user is authenticated
-    const user = supabase.auth.user();
+    const { data: user, error: userError } = await supabase.auth.getUser();
     console.log("Authenticated User:", user); // Log the user object to verify
-    if (!user) {
+    if (userError || !user) {
       Alert.alert("Error", "No user is logged in.");
       return;
     }
@@ -37,7 +37,7 @@ export default function ReportIssueScreen({ navigation, route }) {
 
     const { data, error } = await supabase
       .from('reports')
-      .upsert([  // Changed from insert to upsert
+      .insert([
         {
           title: issueTitle,
           description: description,

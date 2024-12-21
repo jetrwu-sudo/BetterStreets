@@ -56,7 +56,11 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Recent Reports</Text>
           {recentReports.map((report) => (
-            <View key={report.id} style={styles.reportItem}>
+            <TouchableOpacity
+              key={report.id}
+              style={styles.reportItem}
+              onPress={() => navigation.navigate('IssueDetailsScreen', { report })}
+            >
               <View style={styles.reportIconContainer}>
                 <Text style={styles.reportIcon}>🚧</Text>
               </View>
@@ -67,7 +71,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.reportStatusContainer}>
                 <Text style={styles.reportStatus}>{report.status}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
